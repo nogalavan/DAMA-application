@@ -2,12 +2,42 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
-import Button from './components/Button';
+import ItemDisplay from './ItemDisplay';
+
+// const PlaceholderImage = require('../../assets/images/study2.jpeg');
+
+const items = [
+  {
+    id: 'item-Mouse',
+    name: 'עכבר',
+    imageSource: require('../assets/images/mouse.png')
+  },
+  {
+    id: 'item-Key_baord',
+    name: 'מקלדת',
+    imageSource: require('../assets/images/keyboard.png')
+  },
+  {
+    id: 'item-Charger',
+    name: 'מטען',
+    imageSource: require('../assets/images/macCharger.png')
+  },
+  {
+    id: 'item-Type_C',
+    name: 'מטען',
+    imageSource: require('../assets/images/macCharger.png')
+  },
+  {
+    id: 'item-Eathernet',
+    name: 'כבל רשת',
+    imageSource: require('../assets/images/eathernetCable.png')
+  }
+]
 
 const QRScanner = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [data, setData] = useState('');
+  const [scannedData, setScannedData] = useState('');
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -20,9 +50,15 @@ const QRScanner = () => {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    setData(`Bar code with type ${type} and data ${data} has been scanned!`);
-    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    // alert(data);
+    setScannedData(data);
+    // alert(`Bar code with type ${type} and data ${scannedData} has been scanned!`);
   };
+
+  const handleRemoveScann = () => {
+    setScanned(false);
+    setScannedData('');
+  }
 
   if (hasPermission === null) {
     return <Text>Requesting for camera permission</Text>;
@@ -31,16 +67,15 @@ const QRScanner = () => {
     return <Text>No access to camera</Text>;
   }
 
-  return (
+  return (scanned && scannedData ? 
+  <ItemDisplay item={items.find(x => x.id === scannedData)} 
+  handleRemoveScann={handleRemoveScann}></ItemDisplay> :
     <View style={styles.container}>
         <BarCodeScanner
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
             style={StyleSheet.absoluteFillObject}
           />
-      <Text style={{ color: '#823e18', fontSize: 16, fontWeight: 'bold' }}>{data}</Text>
-      <View style={styles.footerContainer}>
-        <Button label='סרוק מחדש' onClick={() => setScanned(false)}/>
-      </View>
+        <Text style={{ color: '#823e18', fontSize: 16, fontWeight: 'bold' }}>{scannedData}</Text>
   </View>
   );
 }
