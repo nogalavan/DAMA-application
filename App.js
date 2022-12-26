@@ -1,26 +1,28 @@
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Text } from 'react-native';
 
-import Button from './components/Button';
-import ImageViewer from './components/ImageViewer';
+import Button from './src/components/Button';
+import ImageViewer from './src/components/ImageViewer';
+import QRScanner from './src/QRScanner';
 
 const PlaceholderImage = require('./assets/images/study2.jpeg');
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <View style={styles.imageContainer}>
-        <ImageViewer placeholderImageSource={PlaceholderImage} />
-      </View>
-      <View>
-        <Text style={{ color: '#823e18', fontSize: 80 }}>DAMA</Text>
-      </View>
-      <View style={styles.footerContainer}>
-        <Button label="בחר מוצר" />
-      </View>
-      <StatusBar style="auto" />
-    </View>
-  );
+const App = () => {
+  const [isScanBarcode, setIsScanBarcode] = useState(false);
+
+  return (isScanBarcode ?  
+      <QRScanner /> : 
+      <View style={styles.container}>
+        <View style={styles.imageContainer}>
+          <ImageViewer placeholderImageSource={PlaceholderImage} />
+        </View>
+        <Text style={{ color: '#823e18', fontSize: 80, fontWeight: 'bold' }}>DAMA</Text>
+        <View style={styles.footerContainer}>
+          <Button label="בחר מוצר" onClick={()=>setIsScanBarcode(true)}/>
+        </View>
+        <StatusBar style="auto" />
+      </View>)
 }
 
 const styles = StyleSheet.create({
@@ -44,3 +46,5 @@ const styles = StyleSheet.create({
     paddingTop: 20
   },
 });
+
+export default App;
