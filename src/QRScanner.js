@@ -1,43 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-
+import axios from "axios";
 import ItemDisplay from './ItemDisplay';
 
-// const PlaceholderImage = require('../../assets/images/study2.jpeg');
-
-const items = [
-  {
-    id: 'item-Mouse',
-    name: 'עכבר',
-    imageSource: require('../assets/images/mouse.png')
-  },
-  {
-    id: 'item-Key_baord',
-    name: 'מקלדת',
-    imageSource: require('../assets/images/keyboard.png')
-  },
-  {
-    id: 'item-Charger',
-    name: 'מטען',
-    imageSource: require('../assets/images/macCharger.png')
-  },
-  {
-    id: 'item-Type_C',
-    name: 'מטען',
-    imageSource: require('../assets/images/macCharger.png')
-  },
-  {
-    id: 'item-Eathernet',
-    name: 'כבל רשת',
-    imageSource: require('../assets/images/eathernetCable.png')
-  }
-]
 
 const QRScanner = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [scannedData, setScannedData] = useState('');
+  const [items, setItems] = useState();
+
+  const getItems = () => {
+    axios.get('https://dama-server-vercel.vercel.app/api/stockItem/getAll')
+        .then(response => {setItems(response.data)
+        });
+    
+    // axios.get('http://localhost:5000/api/stockItem/getAll')
+    //     .then(response => {setItems(response.data)
+    //     });
+  }
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -46,6 +28,7 @@ const QRScanner = () => {
     };
 
     getBarCodeScannerPermissions();
+    getItems();
   }, []);
 
   const handleBarCodeScanned = ({ type, data }) => {
@@ -68,8 +51,8 @@ const QRScanner = () => {
   }
 
   return (scanned && scannedData ? 
-  <ItemDisplay item={items.find(x => x.id === scannedData)} 
-  handleRemoveScann={handleRemoveScann}></ItemDisplay> :
+  <ItemDisplay item={items.find(x => x.myId === scannedData)} 
+  handleRemoveScann={handleRemoveScann} getItems={getItems}></ItemDisplay> :
     <View style={styles.container}>
         <BarCodeScanner
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}

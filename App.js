@@ -4,7 +4,6 @@ import { StyleSheet, View, Text, ImageBackground } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import Button from './src/components/Button';
-import ImageViewer from './src/components/ImageViewer';
 import QRScanner from './src/QRScanner';
 
 const PlaceholderImage = require('./assets/images/study2.jpeg');
